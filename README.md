@@ -1,5 +1,7 @@
 # SNL's Bakery · página del catálogo
 
+**En línea:** https://lobby9000.github.io/snl-bakery/
+
 Página estática con el catálogo navideño de Sundae, Nimue & Lana's Bakery. Muestra la sala con el árbol en 3D (cada esfera es una galleta), el catálogo completo y un carrito que arma el pedido y lo abre en WhatsApp. No cobra en línea: los pagos siguen siendo en efectivo o por transferencia.
 
 ## Qué hay en la carpeta
@@ -37,7 +39,7 @@ La workstation también lo genera con los precios que tengan ahí. En la pestañ
 1. En GitHub, crea un repositorio público, por ejemplo `snl-bakery`.
 2. Sube todo el contenido de esta carpeta a la raíz del repositorio, con las carpetas `css`, `js`, `vendor` e `img` tal cual.
 3. Entra a **Settings → Pages**. En *Build and deployment* elige *Deploy from a branch*, la rama `main` y la carpeta `/ (root)`. Guarda.
-4. En uno o dos minutos la página queda en `https://TU-USUARIO.github.io/snl-bakery/`.
+4. En uno o dos minutos la página queda en `https://lobby9000.github.io/snl-bakery/`.
 
 Cada vez que subas un cambio a `main`, la página se actualiza sola. Si después compran un dominio propio, se configura en esa misma pantalla.
 
