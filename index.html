@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SNL's Bakery · Galletas navideñas</title>
+<meta name="description" content="Galletas navideñas hechas en casa en la CDMX: jengibre con royal icing, mantequilla, linzer y kits para decorar. Pedidos por WhatsApp.">
+<meta property="og:title" content="SNL's Bakery · Galletas navideñas hechas en casa">
+<meta property="og:description" content="Jengibre con royal icing, mantequilla, linzer y kits para decorar. Pedidos por WhatsApp en la CDMX.">
+<meta name="theme-color" content="#1d3a2a">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Yellowtail&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css">
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+</head>
+<body>
+<header class="barra">
+  <a class="marca" href="#inicio" aria-label="SNL's Bakery, inicio">
+    <span class="mono" aria-hidden="true">SNL</span>
+    <span><b data-n="nombre">SNL's Bakery</b><small data-n="nombreLargo">Sundae, Nimue &amp; Lana's Bakery</small></span>
+  </a>
+  <nav class="nav" aria-label="Secciones">
+    <a href="#catalogo">Catálogo</a>
+    <a href="#como-pedir">Cómo pedir</a>
+    <a href="#entregas">Entregas</a>
+    <a class="btn btn-wa chico" data-wa href="#" target="_blank" rel="noopener">WhatsApp</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" id="inicio">
+    <div class="escena" id="escena" role="img" aria-label="Un árbol de Navidad low poly junto a la chimenea: cada esfera es una galleta, un tren de juguete le da vueltas y tres gatos descansan alrededor."></div>
+    <div class="hero-texto">
+      <p class="firma">aprobadas por tres michis</p>
+      <h1 data-n="lema">Galletas navideñas hechas en casa</h1>
+      <p class="sub" data-n="sublema">Horneadas por pedido en la CDMX y aprobadas por Sundae, Nimue y Lana.</p>
+      <p class="temporada-corta" id="temporada-corta">Preventa abierta del 20 de noviembre al 17 de diciembre.</p>
+      <div class="botones">
+        <a class="btn btn-vino" href="#catalogo">Ver catálogo</a>
+        <a class="btn btn-wa" data-wa href="#" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+      </div>
+    </div>
+    <p class="pista" id="pista">Toca una esfera del árbol para ver esa galleta</p>
+    <div class="tip" id="tip" hidden></div>
+  </section>
+
+  <div class="tartan" aria-hidden="true"></div>
+
+  <section class="band" id="catalogo">
+    <div class="cabeza">
+      <h2>El catálogo de esta Navidad</h2>
+      <p>Elige tus cajas, arma tu pedido y al final nos lo mandas por WhatsApp. Las de chispas y snickerdoodle las horneamos solo por pedido.</p>
+    </div>
+    <div class="lista" id="lista"></div>
+  </section>
+
+  <div class="encaje" aria-hidden="true"></div>
+
+  <section class="band crema2" id="como-pedir">
+    <div class="cabeza"><h2>Cómo pedir</h2></div>
+    <ol class="pasos">
+      <li><b>Elige tus cajas</b><span>Aquí en el catálogo o en nuestro Instagram.</span></li>
+      <li><b>Mándanos tu pedido</b><span>Por WhatsApp, con el día que lo quieres recibir.</span></li>
+      <li><b>Aparta tu pedido</b><span id="paso-anticipo">Con 50% por transferencia y el resto al entregar.</span></li>
+      <li><b>Recibe y disfruta</b><span>En una estación del metro o por Uber.</span></li>
+    </ol>
+  </section>
+
+  <section class="band dos" id="entregas">
+    <div>
+      <h2>Entregas</h2>
+      <ul class="lista-simple" id="lista-entregas"></ul>
+      <p class="nota-corte" id="nota-corte">Pedidos hasta el miércoles para entregar el sábado.</p>
+    </div>
+    <div>
+      <h2>Pagos</h2>
+      <ul class="lista-simple" id="lista-pagos"></ul>
+      <p class="nota-corte">Por ahora no aceptamos tarjeta.</p>
+    </div>
+  </section>
+
+  <section class="band verde" id="temporada">
+    <div class="cabeza"><h2>Fechas de la temporada</h2></div>
+    <div class="fechas" id="fechas"></div>
+  </section>
+
+  <section class="band" id="cuidados">
+    <div class="cabeza"><h2>Cuidados y alérgenos</h2></div>
+    <div class="cuidados">
+      <p><b>Royal icing artesanal.</b> Lo hacemos con claras de huevo y sin conservadores: disfrútalas en los primeros días o guárdalas en el refri.</p>
+      <p><b>Glaseado sencillo y kits.</b> Aguantan más días en un lugar fresco y seco, en su empaque cerrado.</p>
+      <p><b>Alérgenos.</b> Todas llevan trigo, huevo y lácteos. El linzer y la caja surtida contienen almendra.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="pie">
+  <div class="tartan fino" aria-hidden="true"></div>
+  <div class="pie-dentro">
+    <p class="pie-marca"><b data-n="nombre">SNL's Bakery</b> · <span data-n="nombreLargo">Sundae, Nimue &amp; Lana's Bakery</span> · CDMX</p>
+    <p class="pie-links">
+      <a id="link-ig" href="#" target="_blank" rel="noopener">Instagram</a>
+      <a data-wa href="#" target="_blank" rel="noopener">WhatsApp <span id="wa-visible"></span></a>
+    </p>
+  </div>
+</footer>
+
+<div class="carrito" id="carrito" hidden>
+  <p><b id="carrito-cajas">0 cajas</b> · <span id="carrito-total">$0</span></p>
+  <button class="btn btn-wa" id="carrito-abrir" type="button">Enviar pedido</button>
+</div>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-caja" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <button class="cerrar" id="modal-cerrar" type="button" aria-label="Cerrar">×</button>
+    <h2 id="modal-titulo">Tu pedido</h2>
+    <ul class="resumen" id="resumen"></ul>
+    <p class="total">Total: <b id="resumen-total">$0</b></p>
+    <form id="form-pedido" novalidate>
+      <label>Tu nombre<input id="f-nombre" autocomplete="name" required></label>
+      <label>¿Para qué día?<input id="f-fecha" type="date"><small id="f-fecha-nota">Entregamos los sábados.</small></label>
+      <label>Entrega
+        <select id="f-entrega">
+          <option>En una estación del metro</option>
+          <option>Envío por Uber (costo extra)</option>
+          <option>Lo paso a recoger</option>
+        </select>
+      </label>
+      <label>Estación o colonia<input id="f-lugar" placeholder="Ej. Metro Coyoacán"></label>
+      <fieldset>
+        <legend>Pago</legend>
+        <label class="radio"><input type="radio" name="pago" value="Transferencia" checked> Transferencia</label>
+        <label class="radio"><input type="radio" name="pago" value="Efectivo"> Efectivo</label>
+      </fieldset>
+      <label>Notas<textarea id="f-notas" rows="2" placeholder="Dedicatoria, alergias o lo que necesites"></textarea></label>
+      <a class="btn btn-wa ancho" id="enviar-wa" href="#" target="_blank" rel="noopener">Mandar pedido por WhatsApp</a>
+      <p class="aviso">Se abre WhatsApp con tu pedido ya escrito. Solo tienes que enviarlo.</p>
+    </form>
+  </div>
+</div>
+
+<script src="catalogo.js"></script>
+<script src="js/sitio.js"></script>
+<script type="module" src="js/escena.js"></script>
+</body>
+</html>
