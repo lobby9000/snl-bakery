@@ -2,23 +2,30 @@
 
 **En línea:** https://lobby9000.github.io/snl-bakery/
 
-Página estática con el catálogo navideño de Sundae, Nimue & Lana's Bakery. Muestra la sala con el árbol en 3D (cada esfera es una galleta), el catálogo completo y un carrito que arma el pedido y lo abre en WhatsApp. No cobra en línea: los pagos siguen siendo en efectivo o por transferencia.
+Página estática con el catálogo navideño de Sundae, Nimue & Lana's Bakery. Muestra la sala con el árbol en 3D (cada esfera es una galleta), el catálogo completo con Santa Lab, la caja surtida que arma el cliente, un calendario de entregas y un carrito que arma el pedido y lo abre en WhatsApp. No cobra en línea: los pagos siguen siendo en efectivo o por transferencia, con un anticipo mínimo de 70%.
 
 ## Qué hay en la carpeta
 
 | Archivo | Para qué sirve |
 |---|---|
 | `index.html` | La página. Casi nunca hay que tocarla. |
-| `catalogo.js` | **Lo que sí se edita**: productos, precios, fotos, fechas de la temporada, formas de pago, entregas, WhatsApp y los colores de los gatos. |
+| `catalogo.js` | **Lo que sí se edita**: productos, precios, opciones, fotos, calendario, anticipo, formas de pago, entregas, WhatsApp y los gatos. |
 | `css/estilos.css` | Colores, tipografías y acomodo. |
-| `js/sitio.js` | Catálogo, carrito y mensaje de WhatsApp. |
+| `js/sitio.js` | Catálogo, caja surtida, calendario, carrito y mensaje de WhatsApp. |
 | `js/escena.js` | La sala en 3D (árbol, focos, tren, chimenea, ventana y gatos). |
 | `vendor/three.module.min.js` | three.js 0.170.0, la librería del 3D (licencia MIT en `vendor/THREE-LICENSE.txt`). |
 | `img/` | Aquí van las fotos o carteles de cada galleta y el ícono de la pestaña. |
 
 ## Cambiar precios, textos o fotos
 
-Todo vive en `catalogo.js`. Cada producto tiene `precio`, `piezas`, `descripcion` y `color` (el color de su esfera en el árbol).
+Todo vive en `catalogo.js`. Cada producto tiene `precio` (en bolsa), `piezas`, `descripcion` y `color` (el color de su esfera en el árbol). Además:
+
+- `caja`: lo que suma si la quieren en caja de regalo. Si no lo tiene, solo se vende en bolsa.
+- `opciones`: lo que elige el cliente, como la masa o el relleno de las thumbprint, con lo que suma cada opción (`extra`).
+- `lab: true`: sale en la sección Santa Lab y su esfera en el árbol es una gota con punta dorada.
+- `pieza`: precio por galleta dentro de la caja surtida. La caja surtida tiene `arma` con el mínimo, el máximo y la caja de muestra.
+
+En `negocio.calendario` están los días para hornear (`minDias`), el último día con entregas (`hasta`), los días llenos (`llenos`), los días sin entregas (`sinEntrega`), los días sin pedidos (`sinPedidos`) y las excepciones (por ejemplo, entregar el 23 con pedidos hasta el 21). `negocio.anticipoMin` es el porcentaje mínimo para apartar. El calendario usa la hora de la Ciudad de México.
 
 Para poner la foto o el cartel de una galleta:
 
@@ -28,9 +35,7 @@ Para poner la foto o el cartel de una galleta:
 
 Mientras `imagen` esté vacío, la página dibuja una etiqueta provisional con el color de la galleta.
 
-Un producto con `porPedido: true` aparece en el catálogo con la insignia "Por pedido" y una esfera más chica en el árbol. Así están las de chispas y las snickerdoodle.
-
-Los gatos usan los colores de `negocio.gatos`. Si cambias `pelaje`, `panza`, `rayas` u `ojos`, cambian en el 3D y en el cuadrito sobre la chimenea.
+Los gatos usan `negocio.gatos`: `pose` (echada, jugando o camaron), `escala`, `patron` (bicolor, punto o calico) y sus colores (`pelaje`, `panza`, `rayas`, `puntos`, `manchas`, `ojos`, `orejas`). Cambian en el 3D y en el cuadrito sobre la chimenea.
 
 La workstation también lo genera con los precios que tengan ahí. En la pestaña **Costos y precios**, el botón *Copiar catálogo para la página* copia el archivo completo. Luego, en GitHub, abre `catalogo.js`, toca el lápiz para editarlo, borra todo, pega y guarda con *Commit changes*. Si el copiado no funciona en tu teléfono, usa *Descargar como texto* y pega ese contenido.
 
@@ -59,4 +64,5 @@ Luego entra a `http://localhost:8000`.
 - Si el teléfono no tiene 3D, la página se ve completa sin la escena. Si la persona pidió reducir animaciones en su sistema, la sala se queda quieta.
 - La animación se pausa cuando la escena no está en pantalla, para no gastar batería.
 - El carrito se guarda en el navegador de quien visita, así que no se pierde si recarga la página.
+- El botón de WhatsApp no se activa hasta que eligen el día de entrega.
 - No usa cookies, rastreadores ni servidores propios. Las tipografías vienen de Google Fonts.

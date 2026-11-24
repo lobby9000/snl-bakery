@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SNL's Bakery · Galletas navideñas</title>
-<meta name="description" content="Galletas navideñas hechas en casa en la CDMX: jengibre con royal icing, mantequilla, linzer y kits para decorar. Pedidos por WhatsApp.">
+<meta name="description" content="Galletas navideñas hechas en casa en la CDMX: jengibre con royal icing, mantequilla, linzer, caja surtida que tú armas y las experimentales de Santa Lab. Pedidos por WhatsApp.">
 <meta property="og:title" content="SNL's Bakery · Galletas navideñas hechas en casa">
-<meta property="og:description" content="Jengibre con royal icing, mantequilla, linzer y kits para decorar. Pedidos por WhatsApp en la CDMX.">
+<meta property="og:description" content="Las favoritas de Santa: jengibre con royal icing, mantequilla, linzer, caja surtida y Santa Lab. Pedidos por WhatsApp en la CDMX.">
 <meta name="theme-color" content="#1d3a2a">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +23,7 @@
   </a>
   <nav class="nav" aria-label="Secciones">
     <a href="#catalogo">Catálogo</a>
+    <a href="#santa-lab">Santa Lab</a>
     <a href="#como-pedir">Cómo pedir</a>
     <a href="#entregas">Entregas</a>
     <a class="btn btn-wa chico" data-wa href="#" target="_blank" rel="noopener">WhatsApp</a>
@@ -33,10 +34,10 @@
   <section class="hero" id="inicio">
     <div class="escena" id="escena" role="img" aria-label="Un árbol de Navidad low poly junto a la chimenea: cada esfera es una galleta, un tren de juguete le da vueltas y tres gatos descansan alrededor."></div>
     <div class="hero-texto">
-      <p class="firma">aprobadas por tres michis</p>
+      <p class="firma" data-n="firma">Las favoritas de Santa</p>
       <h1 data-n="lema">Galletas navideñas hechas en casa</h1>
       <p class="sub" data-n="sublema">Horneadas por pedido en la CDMX y aprobadas por Sundae, Nimue y Lana.</p>
-      <p class="temporada-corta" id="temporada-corta">Preventa abierta del 20 de noviembre al 17 de diciembre.</p>
+      <p class="temporada-corta" id="temporada-corta">Horneamos todo por pedido, con 3 días de anticipación.</p>
       <div class="botones">
         <a class="btn btn-vino" href="#catalogo">Ver catálogo</a>
         <a class="btn btn-wa" data-wa href="#" target="_blank" rel="noopener">Pedir por WhatsApp</a>
@@ -51,9 +52,18 @@
   <section class="band" id="catalogo">
     <div class="cabeza">
       <h2>El catálogo de esta Navidad</h2>
-      <p>Elige tus cajas, arma tu pedido y al final nos lo mandas por WhatsApp. Las de chispas y snickerdoodle las horneamos solo por pedido.</p>
+      <p>Todo lo horneamos por pedido. Elige bolsa o caja de regalo, arma tu pedido y al final nos lo mandas por WhatsApp con el día que lo quieres.</p>
     </div>
     <div class="lista" id="lista"></div>
+  </section>
+
+  <section class="band lab" id="santa-lab">
+    <div class="cabeza">
+      <p class="firma chica">recetas en prueba</p>
+      <h2>Santa Lab</h2>
+      <p>Las galletas experimentales de esta Navidad: las horneamos en pocas cantidades y, si te gustan, se quedan para el próximo año.</p>
+    </div>
+    <div class="lista" id="lista-lab"></div>
   </section>
 
   <div class="encaje" aria-hidden="true"></div>
@@ -61,9 +71,9 @@
   <section class="band crema2" id="como-pedir">
     <div class="cabeza"><h2>Cómo pedir</h2></div>
     <ol class="pasos">
-      <li><b>Elige tus cajas</b><span>Aquí en el catálogo o en nuestro Instagram.</span></li>
-      <li><b>Mándanos tu pedido</b><span>Por WhatsApp, con el día que lo quieres recibir.</span></li>
-      <li><b>Aparta tu pedido</b><span id="paso-anticipo">Con 50% por transferencia y el resto al entregar.</span></li>
+      <li><b>Elige tus galletas</b><span>En bolsa o en caja de regalo, o arma tu caja surtida.</span></li>
+      <li><b>Escoge el día</b><span>En el calendario, con al menos 3 días para hornearlas.</span></li>
+      <li><b>Aparta tu fecha</b><span id="paso-anticipo">Paga por adelantado al menos el 70% (o todo, si prefieres). El resto, al entregar.</span></li>
       <li><b>Recibe y disfruta</b><span>En una estación del metro o por Uber.</span></li>
     </ol>
   </section>
@@ -72,26 +82,28 @@
     <div>
       <h2>Entregas</h2>
       <ul class="lista-simple" id="lista-entregas"></ul>
-      <p class="nota-corte" id="nota-corte">Pedidos hasta el miércoles para entregar el sábado.</p>
+      <p class="nota-corte" id="nota-corte">Horneamos todo por pedido: elige tu fecha con al menos 3 días de anticipación.</p>
     </div>
     <div>
       <h2>Pagos</h2>
       <ul class="lista-simple" id="lista-pagos"></ul>
-      <p class="nota-corte">Por ahora no aceptamos tarjeta.</p>
+      <p class="nota-corte" id="nota-anticipo">Para apartar: mínimo 70% por adelantado o, si prefieres, todo. Por ahora no aceptamos tarjeta.</p>
     </div>
   </section>
 
   <section class="band verde" id="temporada">
-    <div class="cabeza"><h2>Fechas de la temporada</h2></div>
+    <div class="cabeza"><h2>Fechas y calendario</h2></div>
     <div class="fechas" id="fechas"></div>
+    <div class="calendario-info" id="calendario-info"></div>
   </section>
 
   <section class="band" id="cuidados">
     <div class="cabeza"><h2>Cuidados y alérgenos</h2></div>
     <div class="cuidados">
-      <p><b>Royal icing artesanal.</b> Lo hacemos con claras de huevo y sin conservadores: disfrútalas en los primeros días o guárdalas en el refri.</p>
+      <p><b>Royal icing artesanal.</b> Lo hacemos con merengue en polvo y sin conservadores: guárdalas en un lugar fresco y seco y disfrútalas en los primeros días.</p>
       <p><b>Glaseado sencillo y kits.</b> Aguantan más días en un lugar fresco y seco, en su empaque cerrado.</p>
-      <p><b>Alérgenos.</b> Todas llevan trigo, huevo y lácteos. El linzer y la caja surtida contienen almendra.</p>
+      <p><b>Santa Lab.</b> Las thumbprint con relleno de crema (rompope, eggnog o arroz con leche) van al refri y se disfrutan en 3 días. Todo es sin alcohol.</p>
+      <p><b>Alérgenos.</b> Todas llevan trigo, huevo y lácteos. El linzer contiene almendra, y la caja surtida también si eliges linzer. Las Teddy llevan chocolates confitados.</p>
     </div>
   </section>
 </main>
@@ -108,8 +120,8 @@
 </footer>
 
 <div class="carrito" id="carrito" hidden>
-  <p><b id="carrito-cajas">0 cajas</b> · <span id="carrito-total">$0</span></p>
-  <button class="btn btn-wa" id="carrito-abrir" type="button">Enviar pedido</button>
+  <p><b id="carrito-cajas">0 productos</b> · <span id="carrito-total">$0</span></p>
+  <button class="btn btn-wa" id="carrito-abrir" type="button">Ver mi pedido</button>
 </div>
 
 <div class="modal" id="modal" hidden>
@@ -120,7 +132,11 @@
     <p class="total">Total: <b id="resumen-total">$0</b></p>
     <form id="form-pedido" novalidate>
       <label>Tu nombre<input id="f-nombre" autocomplete="name" required></label>
-      <label>¿Para qué día?<input id="f-fecha" type="date"><small id="f-fecha-nota">Entregamos los sábados.</small></label>
+      <fieldset class="cal-campo">
+        <legend>¿Qué día lo quieres?</legend>
+        <div class="calendario" id="f-calendario"></div>
+        <small id="f-fecha-nota" aria-live="polite"></small>
+      </fieldset>
       <label>Entrega
         <select id="f-entrega">
           <option>En una estación del metro</option>
@@ -130,13 +146,18 @@
       </label>
       <label>Estación o colonia<input id="f-lugar" placeholder="Ej. Metro Coyoacán"></label>
       <fieldset>
-        <legend>Pago</legend>
+        <legend>¿Cómo pagas?</legend>
         <label class="radio"><input type="radio" name="pago" value="Transferencia" checked> Transferencia</label>
         <label class="radio"><input type="radio" name="pago" value="Efectivo"> Efectivo</label>
       </fieldset>
+      <fieldset class="cuanto">
+        <legend>¿Cuánto pagas ahora?</legend>
+        <label class="radio"><input type="radio" name="cuanto" value="anticipo" checked> <span id="txt-anticipo">Aparto con el 70%</span></label>
+        <label class="radio"><input type="radio" name="cuanto" value="todo"> <span id="txt-todo">Pago todo ahora</span></label>
+      </fieldset>
       <label>Notas<textarea id="f-notas" rows="2" placeholder="Dedicatoria, alergias o lo que necesites"></textarea></label>
-      <a class="btn btn-wa ancho" id="enviar-wa" href="#" target="_blank" rel="noopener">Mandar pedido por WhatsApp</a>
-      <p class="aviso">Se abre WhatsApp con tu pedido ya escrito. Solo tienes que enviarlo.</p>
+      <a class="btn btn-wa ancho" id="enviar-wa" href="#" rel="noopener">Mandar pedido por WhatsApp</a>
+      <p class="aviso" id="aviso-wa" aria-live="polite">Se abre WhatsApp con tu pedido ya escrito. Solo tienes que enviarlo.</p>
     </form>
   </div>
 </div>

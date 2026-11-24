@@ -120,13 +120,21 @@ function iniciar() {
   const retrato = textura(256, 160, (g, w, h) => {
     g.fillStyle = '#efe2c6'; g.fillRect(0, 0, w, h);
     g.strokeStyle = '#b8893b'; g.lineWidth = 3; g.strokeRect(10, 10, w - 20, h - 20);
-    const cols = (gatosCfg.length ? gatosCfg : [{ pelaje: '#8a7560' }, { pelaje: '#d47f2c' }, { pelaje: '#38363a' }]).slice(0, 3);
+    const cols = (gatosCfg.length ? gatosCfg : [{ pelaje: '#d9822b', panza: '#fbf4ea', patron: 'bicolor' }, { pelaje: '#efe6d8', puntos: '#8c7d72', patron: 'punto', ojos: '#86b8e8' }, { pelaje: '#f7f0e4', manchas: ['#d4843c', '#6b625b'], patron: 'calico' }]).slice(0, 3);
     cols.forEach((cfg, i) => {
       const cx = w * (0.27 + i * 0.23), cy = h * 0.6, r = 26;
-      g.fillStyle = cfg.pelaje;
+      const elipse = (x, y, rx, ry, c) => { g.fillStyle = c; g.beginPath(); g.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); g.fill(); };
+      g.save();
+      g.fillStyle = cfg.orejas || (cfg.patron === 'punto' ? cfg.puntos : cfg.patron === 'calico' ? (cfg.manchas || [])[1] : cfg.pelaje) || cfg.pelaje;
       g.beginPath(); g.moveTo(cx - r * 0.95, cy - r * 0.25); g.lineTo(cx - r * 0.75, cy - r * 1.35); g.lineTo(cx - r * 0.15, cy - r * 0.85); g.closePath(); g.fill();
       g.beginPath(); g.moveTo(cx + r * 0.95, cy - r * 0.25); g.lineTo(cx + r * 0.75, cy - r * 1.35); g.lineTo(cx + r * 0.15, cy - r * 0.85); g.closePath(); g.fill();
-      g.beginPath(); g.ellipse(cx, cy, r, r * 0.86, 0, 0, Math.PI * 2); g.fill();
+      g.beginPath(); g.ellipse(cx, cy, r, r * 0.86, 0, 0, Math.PI * 2); g.clip();
+      elipse(cx, cy, r, r * 0.86, cfg.pelaje);
+      if (cfg.patron === 'calico') { elipse(cx - r * 0.55, cy - r * 0.55, r * 0.75, r * 0.55, (cfg.manchas || [])[0] || cfg.pelaje); elipse(cx + r * 0.7, cy - r * 0.35, r * 0.6, r * 0.7, (cfg.manchas || [])[1] || cfg.pelaje); }
+      if (cfg.patron === 'punto') elipse(cx, cy + r * 0.12, r * 0.62, r * 0.5, cfg.puntos || cfg.pelaje);
+      if (cfg.patron === 'bicolor') { elipse(cx, cy + r * 0.55, r * 0.78, r * 0.55, cfg.panza || '#fff'); g.fillStyle = cfg.panza || '#fff'; g.fillRect(cx - r * 0.09, cy - r * 0.55, r * 0.18, r * 0.8); }
+      if (cfg.patron === 'calico') elipse(cx, cy + r * 0.6, r * 0.5, r * 0.4, cfg.panza || '#fff');
+      g.restore();
       g.fillStyle = cfg.ojos || '#c9a43b';
       g.beginPath(); g.ellipse(cx - r * 0.38, cy - r * 0.1, 4, 5, 0, 0, Math.PI * 2); g.ellipse(cx + r * 0.38, cy - r * 0.1, 4, 5, 0, 0, Math.PI * 2); g.fill();
     });
@@ -263,10 +271,10 @@ function iniciar() {
   const esferas = [];
   const conLista = productos.length ? productos : [{ id: 'galleta', nombre: 'Galleta', color: '#c62828', precio: 0 }];
   const turnos = [];
-  conLista.forEach((p) => { const n = p.porPedido ? 2 : 3; for (let i = 0; i < n; i++) turnos.push(p); });
+  conLista.forEach((p) => { for (let i = 0; i < 2; i++) turnos.push(p); });
   const icoGeo = new THREE.IcosahedronGeometry(1, 1);
   turnos.forEach((p, i) => {
-    const s = p.porPedido ? 0.16 : 0.2;
+    const s = p.lab ? 0.17 : 0.2;
     const f = (i + 0.5) / turnos.length;
     const y = 1.0 + 2.45 * (1 - Math.sqrt(1 - f * 0.96));
     const a = i * 2.39996 + 0.6;
@@ -278,8 +286,13 @@ function iniciar() {
     const lum = c.r * 0.3 + c.g * 0.59 + c.b * 0.11;
     const g = new THREE.Group();
     const bola = malla(icoGeo, new THREE.MeshStandardMaterial({ color: c, flatShading: true, metalness: 0.4, roughness: 0.25, emissive: c, emissiveIntensity: 0.12 }), 0, -s * 1.1, 0);
-    bola.scale.setScalar(s); g.add(bola);
-    const banda = malla(new THREE.TorusGeometry(s * 1.0, s * 0.11, 4, 14), mat(lum > 0.6 ? '#b3261e' : '#ecd9a6', { metalness: 0.4, roughness: 0.4 }), 0, -s * 1.1, 0);
+    if (p.lab) {
+      // Santa Lab: gota alargada con banda de crema y punta dorada
+      bola.scale.set(s * 0.86, s * 1.38, s * 0.86); bola.position.y = -s * 1.45;
+      const punta = malla(new THREE.ConeGeometry(s * 0.22, s * 0.6, 6), mat('#d2a646', { metalness: 0.7, roughness: 0.3 }), 0, -s * 3.0, 0); punta.rotation.x = Math.PI; g.add(punta);
+    } else bola.scale.setScalar(s);
+    g.add(bola);
+    const banda = malla(new THREE.TorusGeometry(s * (p.lab ? 0.88 : 1.0), s * 0.11, 4, 14), mat(p.lab ? '#f6efe0' : lum > 0.6 ? '#b3261e' : '#ecd9a6', { metalness: 0.4, roughness: 0.4 }), 0, p.lab ? -s * 1.45 : -s * 1.1, 0);
     banda.rotation.x = Math.PI / 2; g.add(banda);
     g.add(malla(new THREE.CylinderGeometry(s * 0.28, s * 0.28, s * 0.32, 6), mat('#c9a14a', { metalness: 0.7, roughness: 0.3 }), 0, -s * 0.05, 0));
     const tapa = malla(new THREE.SphereGeometry(s * 1.9, 6, 4), new THREE.MeshBasicMaterial({ visible: false }), 0, -s * 1.1, 0);
@@ -355,59 +368,107 @@ function iniciar() {
 
   // ---------- gatos
   const gatos = [];
-  function pintarCaras(geo, cfg) {
+  const col = (c) => new THREE.Color(c);
+  function pintor(cfg) {
+    const base = col(cfg.pelaje), panza = col(cfg.panza || cfg.pelaje), rayas = cfg.rayas ? col(cfg.rayas) : null;
+    const puntos = col(cfg.puntos || cfg.rayas || cfg.pelaje);
+    const m1 = col((cfg.manchas || [])[0] || cfg.pelaje), m2 = col((cfg.manchas || [])[1] || cfg.rayas || cfg.pelaje);
+    const sombra = (c, k) => c.clone().multiplyScalar(k);
+    const m1r = sombra(m1, 0.74), m2r = sombra(m2, 0.55), ptr = sombra(puntos, 0.68), mezcla = base.clone().lerp(puntos, 0.5);
+    return (parte, x, y, z, lim) => {
+      const raya = Math.sin(x * 26 + z * 5 + y * 9) > 0.42;
+      if (cfg.patron === 'calico') {
+        if (parte === 'cabeza') {
+          if (x > 0.07 && y < 0.02) return panza;
+          if (z > 0.015 && y > -0.03) return raya ? m2r : m2;
+          if (y > 0.035) return raya ? m1r : m1;
+          return base;
+        }
+        if (y < lim) return panza;
+        if (x > 0.2) return panza;
+        if (x > -0.04) return raya ? m2r : m2;
+        return raya ? m1r : m1;
+      }
+      if (cfg.patron === 'punto') {
+        if (parte === 'cabeza') {
+          if (x > 0.055 && y < 0.06) return raya && y > -0.01 ? ptr : puntos;
+          if (y > 0.07) return raya ? ptr : mezcla;
+          return base;
+        }
+        if (y < lim) return panza;
+        return y > 0.1 && raya ? base.clone().lerp(puntos, 0.25) : base;
+      }
+      if (parte === 'cabeza') {
+        if (x > 0.075 && y < 0.015) return panza;
+        if (x > 0.1 && Math.abs(z) < 0.03 && y < 0.08) return panza;
+      }
+      if (y < lim && x > -0.06) return panza;
+      if (rayas && raya && y > 0) return rayas;
+      return base;
+    };
+  }
+  function pintarCaras(geo, colorDe, parte, lim) {
     const g = geo.index ? geo.toNonIndexed() : geo;
     const p = g.attributes.position, cols = new Float32Array(p.count * 3);
-    const base = new THREE.Color(cfg.pelaje), panza = new THREE.Color(cfg.panza || cfg.pelaje), rayas = cfg.rayas ? new THREE.Color(cfg.rayas) : null;
     for (let i = 0; i < p.count; i += 3) {
       const cx = (p.getX(i) + p.getX(i + 1) + p.getX(i + 2)) / 3, cy = (p.getY(i) + p.getY(i + 1) + p.getY(i + 2)) / 3, cz = (p.getZ(i) + p.getZ(i + 1) + p.getZ(i + 2)) / 3;
-      let c = base;
-      if (cy < cfg.limitePanza && cx > -0.05) c = panza;
-      else if (rayas && Math.sin(cx * 26 + cz * 4) > 0.45 && cy > 0) c = rayas;
+      const c = colorDe(parte, cx, cy, cz, lim);
       for (let k = 0; k < 3; k++) cols.set([c.r, c.g, c.b], (i + k) * 3);
     }
     g.setAttribute('color', new THREE.BufferAttribute(cols, 3));
     g.computeVertexNormals();
     return g;
   }
+  function colaAnillada(curva, radio, cfg) {
+    const geo = new THREE.TubeGeometry(curva, 18, radio, 5);
+    const p = geo.attributes.position, cols = new Float32Array(p.count * 3);
+    const a = col(cfg.patron === 'calico' ? (cfg.manchas || [])[1] || cfg.pelaje : cfg.patron === 'punto' ? cfg.puntos || cfg.pelaje : cfg.pelaje);
+    const b = cfg.patron === 'bicolor' ? col(cfg.rayas || cfg.pelaje) : col(cfg.rayas || cfg.pelaje).multiplyScalar(cfg.patron === 'punto' ? 0.8 : 0.7);
+    for (let i = 0; i < p.count; i++) { const seg = Math.floor(i / 6); const c = Math.floor(seg / 2) % 2 ? b : a; cols.set([c.r, c.g, c.b], i * 3); }
+    geo.setAttribute('color', new THREE.BufferAttribute(cols, 3));
+    return geo;
+  }
   const matGato = new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.95 });
   function hacerGato(cfg, pose) {
     const gato = new THREE.Group();
+    const pinta = pintor(cfg);
     const piel = mat(cfg.pelaje, { roughness: 0.95 });
     const blanco = mat(cfg.panza || cfg.pelaje, { roughness: 0.95 });
+    const oreja = mat(cfg.orejas || cfg.pelaje, { roughness: 0.95 });
+    const enrosc = pose === 'camaron' || pose === 'dormida';
     const cuerpoGeo = new THREE.IcosahedronGeometry(0.3, 1);
-    const esc = pose === 'jugando' ? [0.92, 1.25, 0.82] : pose === 'dormida' ? [1.15, 0.52, 1.02] : [1.45, 0.62, 0.84];
+    const esc = pose === 'jugando' ? [0.92, 1.25, 0.82] : enrosc ? [1.18, 0.5, 1.05] : [1.45, 0.62, 0.84];
     cuerpoGeo.scale(...esc);
-    const cuerpo = malla(pintarCaras(cuerpoGeo, { ...cfg, limitePanza: pose === 'jugando' ? 0.05 : -0.08 }), matGato);
-    cuerpo.position.y = pose === 'jugando' ? 0.34 : pose === 'dormida' ? 0.16 : 0.19;
+    const cuerpo = malla(pintarCaras(cuerpoGeo, pinta, 'cuerpo', pose === 'jugando' ? 0.05 : enrosc ? -0.05 : -0.08), matGato);
+    cuerpo.position.y = pose === 'jugando' ? 0.34 : enrosc ? 0.15 : 0.19;
     gato.add(cuerpo);
     const cabeza = new THREE.Group();
     const cabGeo = new THREE.IcosahedronGeometry(0.17, 1); cabGeo.scale(1, 0.9, 1.05);
-    cabeza.add(malla(pintarCaras(cabGeo, { ...cfg, limitePanza: -0.06 }), matGato));
+    cabeza.add(malla(pintarCaras(cabGeo, pinta, 'cabeza', -0.06), matGato));
     [-1, 1].forEach((s) => {
-      const oreja = malla(new THREE.ConeGeometry(0.06, 0.12, 4), piel, -0.01, 0.15, s * 0.085); oreja.rotation.x = s * 0.35; cabeza.add(oreja);
+      const o = malla(new THREE.ConeGeometry(0.06, 0.12, 4), oreja, -0.01, 0.15, s * 0.085); o.rotation.x = s * 0.35; cabeza.add(o);
       const dentro = malla(new THREE.ConeGeometry(0.035, 0.08, 4), mat('#e2a0a0'), 0.022, 0.14, s * 0.082); dentro.rotation.x = s * 0.35; cabeza.add(dentro);
     });
     const hocico = malla(new THREE.IcosahedronGeometry(0.07, 0), blanco, 0.13, -0.04, 0); hocico.scale.set(0.75, 0.62, 1.05); cabeza.add(hocico);
     cabeza.add(malla(new THREE.IcosahedronGeometry(0.018, 0), mat('#d98a8a'), 0.18, -0.005, 0));
-    if (pose === 'dormida') {
+    if (enrosc) {
       [-1, 1].forEach((s) => { const o = malla(new THREE.BoxGeometry(0.012, 0.01, 0.045), mat('#1a1410'), 0.145, 0.03, s * 0.06); o.rotation.y = s * 0.2; cabeza.add(o); });
     } else {
       [-1, 1].forEach((s) => {
-        cabeza.add(malla(new THREE.IcosahedronGeometry(0.024, 0), mat(cfg.ojos || '#c9a43b', { emissive: cfg.ojos || '#c9a43b', emissiveIntensity: 0.25 }), 0.14, 0.035, s * 0.062));
+        cabeza.add(malla(new THREE.IcosahedronGeometry(0.024, 0), mat(cfg.ojos || '#c9a43b', { emissive: cfg.ojos || '#c9a43b', emissiveIntensity: 0.3 }), 0.14, 0.035, s * 0.062));
         cabeza.add(malla(new THREE.BoxGeometry(0.008, 0.03, 0.008), mat('#0c0a08'), 0.162, 0.035, s * 0.062));
       });
     }
     if (pose === 'jugando') cabeza.position.set(0.06, 0.74, 0);
-    else if (pose === 'dormida') { cabeza.position.set(0.24, 0.17, 0.2); cabeza.rotation.set(0.5, -0.5, -0.25); }
+    else if (enrosc) { cabeza.position.set(0.26, 0.13, 0.22); cabeza.rotation.set(0.35, -0.55, -0.75); }
     else cabeza.position.set(0.38, 0.33, 0);
     gato.add(cabeza);
     const colaPts = pose === 'jugando'
       ? [[-0.12, 0.06, 0], [-0.36, 0.04, 0.1], [-0.5, 0.08, 0.28], [-0.48, 0.2, 0.4]]
-      : pose === 'dormida'
-        ? [[-0.3, 0.07, -0.08], [-0.15, 0.06, -0.33], [0.15, 0.06, -0.34], [0.36, 0.07, -0.08]]
+      : enrosc
+        ? [[-0.33, 0.07, -0.08], [-0.3, 0.05, 0.2], [-0.04, 0.05, 0.37], [0.24, 0.06, 0.38]]
         : [[-0.4, 0.09, 0], [-0.46, 0.06, 0.2], [-0.26, 0.05, 0.34], [0.04, 0.05, 0.36]];
-    const cola = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(colaPts.map((v) => new THREE.Vector3(...v))), 16, 0.04, 5), mat(cfg.rayas || cfg.pelaje, { roughness: 0.95 }));
+    const cola = new THREE.Mesh(colaAnillada(new THREE.CatmullRomCurve3(colaPts.map((v) => new THREE.Vector3(...v))), 0.042, cfg), matGato);
     gato.add(cola);
     let pataJuego = null;
     if (pose === 'jugando') {
@@ -418,37 +479,55 @@ function iniciar() {
       gato.add(pataJuego);
     } else if (pose === 'echada') {
       [-1, 1].forEach((s) => gato.add(malla(new THREE.IcosahedronGeometry(0.05, 0), blanco, 0.42, 0.05, s * 0.09)));
+    } else if (enrosc) {
+      // patitas blancas cruzadas sobre la cara, como camarón
+      [[0.43, 0.08, 0.16, 0.7], [0.4, 0.1, 0.3, -0.2]].forEach(([x, y, z, giro]) => { const p = malla(new THREE.CapsuleGeometry(0.04, 0.13, 2, 6), blanco, x, y, z); p.rotation.set(Math.PI / 2, 0, giro); gato.add(p); });
     }
     const tapa = malla(new THREE.SphereGeometry(0.55, 6, 4), new THREE.MeshBasicMaterial({ visible: false }), 0, 0.3, 0);
     tapa.userData = { tipo: 'gato', nombre: cfg.nombre, pose };
     gato.add(tapa);
+    gato.scale.setScalar(+cfg.escala || 1);
     return { gato, cuerpo, cabeza, cola, pataJuego, tapa, esc };
   }
   const mirar = (obj, x, z) => { obj.rotation.y = Math.atan2(-(z - obj.position.z), x - obj.position.x); };
-  const lugares = { echada: [1.55, 2.95], jugando: [-1.2, 3.05], dormida: [-1.45, -4.75] };
-  const poses = ['echada', 'jugando', 'dormida'];
-  (gatosCfg.length ? gatosCfg : [{ nombre: 'Sundae', pelaje: '#8a7560' }, { nombre: 'Lana', pelaje: '#d47f2c' }, { nombre: 'Nimue', pelaje: '#38363a' }]).slice(0, 3).forEach((cfg, i) => {
-    const pose = poses.includes(cfg.pose) ? cfg.pose : poses[i];
+  const lugares = { echada: [1.55, 2.95], jugando: [-1.2, 3.05], camaron: [-1.45, -4.75], dormida: [-1.45, -4.75] };
+  const poses = ['echada', 'jugando', 'camaron'];
+  const porDefecto = [
+    { nombre: 'Sundae', pose: 'echada', escala: 1.2, patron: 'bicolor', pelaje: '#d9822b', panza: '#fbf4ea', rayas: '#b5611c', ojos: '#b9c46a' },
+    { nombre: 'Nimue', pose: 'jugando', escala: 0.74, patron: 'punto', pelaje: '#efe6d8', panza: '#f8f2e9', puntos: '#8c7d72', rayas: '#5f544d', ojos: '#86b8e8' },
+    { nombre: 'Lana', pose: 'camaron', escala: 1, patron: 'calico', pelaje: '#f7f0e4', panza: '#fbf6ee', manchas: ['#d4843c', '#6b625b'], rayas: '#3a3431', ojos: '#c4b64a' }
+  ];
+  (gatosCfg.length ? gatosCfg : porDefecto).slice(0, 3).forEach((cfg, i) => {
+    const pose = poses.includes(cfg.pose) || cfg.pose === 'dormida' ? cfg.pose : poses[i];
     const g = hacerGato(cfg, pose);
     const [x, z] = lugares[pose];
     g.gato.position.set(x, 0, z);
     if (pose === 'echada') mirar(g.gato, 0, 0.4);
     if (pose === 'jugando') mirar(g.gato, 0.4, 6.5);
-    if (pose === 'dormida') {
-      const cojin = new THREE.Group(); cojin.position.set(x, 0, z);
-      cojin.add(malla(new THREE.CylinderGeometry(0.62, 0.68, 0.12, 10), mat('#6b1d28', { roughness: 0.9 }), 0, 0.06, 0));
-      const ribete = malla(new THREE.TorusGeometry(0.65, 0.03, 4, 18), mat('#d2a646', { metalness: 0.5 }), 0, 0.12, 0);
-      ribete.rotation.x = Math.PI / 2; cojin.add(ribete);
-      rincon.add(cojin);
-      g.gato.position.y = 0.11; g.gato.rotation.y = 0.8;
+    const enrosc = pose === 'camaron' || pose === 'dormida';
+    if (enrosc) {
+      // cobija de terciopelo verde y cojín rojo con copo de fieltro, como en su foto
+      const cama = new THREE.Group(); cama.position.set(x, 0, z);
+      cama.add(malla(sacudir(new THREE.CylinderGeometry(0.66, 0.72, 0.13, 12, 1), 0.025), mat('#2f6b40', { roughness: 0.7 }), 0, 0.065, 0));
+      const pliegue = malla(new THREE.TorusGeometry(0.62, 0.05, 4, 16), mat('#245634', { roughness: 0.8 }), 0, 0.12, 0); pliegue.rotation.x = Math.PI / 2; cama.add(pliegue);
+      const cojin = new THREE.Group(); cojin.position.set(-0.08, 0.3, -0.52); cojin.rotation.set(-0.32, 0.18, 0);
+      cojin.add(malla(sacudir(new THREE.BoxGeometry(0.8, 0.46, 0.18, 3, 2, 1), 0.02), mat('#7d2230', { roughness: 0.85 }), 0, 0, 0));
+      const fieltro = mat('#f1ebe0', { roughness: 1 });
+      [0, Math.PI / 3, -Math.PI / 3].forEach((a) => { const r = malla(new THREE.BoxGeometry(0.3, 0.032, 0.012), fieltro, 0, 0, 0.096); r.rotation.z = a; cojin.add(r); });
+      [0, 1, 2, 3, 4, 5].forEach((k) => { const a = k * Math.PI / 3; const pt = malla(new THREE.BoxGeometry(0.06, 0.026, 0.012), fieltro, Math.cos(a) * 0.11, Math.sin(a) * 0.11, 0.097); pt.rotation.z = a + Math.PI / 2; cojin.add(pt); });
+      cama.add(cojin);
+      rincon.add(cama);
+      g.gato.position.y = 0.12; g.gato.rotation.y = 0.55;
     }
-    (pose === 'dormida' ? rincon : escena).add(g.gato);
+    (enrosc ? rincon : escena).add(g.gato);
     if (pose === 'jugando') {
       const p = productos[2] || productos[0] || { color: '#2f6fd6' };
-      const caida = malla(new THREE.IcosahedronGeometry(0.13, 1), new THREE.MeshStandardMaterial({ color: p.color || '#2f6fd6', flatShading: true, metalness: 0.4, roughness: 0.25 }), 0.52, 0.13, -0.12);
+      const caida = malla(new THREE.IcosahedronGeometry(0.13, 1), new THREE.MeshStandardMaterial({ color: p.color || '#2f6fd6', flatShading: true, metalness: 0.4, roughness: 0.25 }), 0.5, 0.13, -0.12);
+      caida.scale.setScalar(1 / (+cfg.escala || 1));
+      caida.position.set(0.5 / (+cfg.escala || 1) * 0.85, 0.13 / (+cfg.escala || 1), -0.12);
       g.gato.add(caida); g.caida = caida;
     }
-    gatos.push({ ...g, pose, fase: i * 1.7 });
+    gatos.push({ ...g, pose: enrosc ? 'dormida' : pose, fase: i * 1.7 });
   });
 
   // ---------- cámara: encuadre, arrastre y balanceo
@@ -499,11 +578,11 @@ function iniciar() {
     tip.replaceChildren();
     const b = document.createElement('b');
     if (d.tipo === 'galleta') {
-      b.textContent = d.producto.nombre;
-      tip.append(b, document.createElement('br'), d.producto.piezas ? d.producto.piezas + ' piezas · ' + dinero(d.producto.precio) : '');
+      b.textContent = (d.producto.lab ? 'Santa Lab · ' : '') + d.producto.nombre;
+      tip.append(b, document.createElement('br'), d.producto.arma ? 'Ármala tú · ' + dinero(d.producto.precio) + ' la de muestra' : d.producto.piezas ? d.producto.piezas + ' piezas · ' + dinero(d.producto.precio) : '');
     } else {
       b.textContent = d.nombre;
-      tip.append(b, ' ' + ({ echada: 'cuidando el tren', jugando: 'jugando con una esfera', dormida: 'dormida junto a la chimenea' }[d.pose] || ''));
+      tip.append(b, ' ' + ({ echada: 'cuidando el tren', jugando: 'jugando con una esfera', dormida: 'dormida junto a la chimenea', camaron: 'dormida junto a la chimenea' }[d.pose] || ''));
     }
     const rh = hero.getBoundingClientRect();
     tip.style.left = Math.min(Math.max(ev.clientX - rh.left, 90), rh.width - 90) + 'px';
