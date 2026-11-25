@@ -62,7 +62,7 @@ h2 { font-size: clamp(30px, 4vw, 44px); font-weight: 800; color: var(--verde); }
 .sub { margin: 12px 0 6px; color: var(--tinta2); }
 .temporada-corta { margin: 0 0 18px; font-size: 15px; font-weight: 600; color: var(--vino); }
 .botones { display: flex; flex-wrap: wrap; gap: 10px; }
-.pista { position: absolute; right: max(4vw, 16px); top: 18px; margin: 0; padding: 8px 14px; border-radius: 999px; background: rgba(27, 18, 13, .6); color: var(--crema); font-size: 14px; border: 1px solid rgba(184, 137, 59, .6); }
+.pista { position: absolute; left: max(4vw, 16px); top: 18px; margin: 0; padding: 8px 14px; border-radius: 999px; background: rgba(27, 18, 13, .6); color: var(--crema); font-size: 14px; border: 1px solid rgba(184, 137, 59, .6); }
 .tip { position: absolute; z-index: 5; pointer-events: none; padding: 8px 12px; border-radius: 8px; background: var(--papel); color: var(--tinta); box-shadow: var(--sombra); border: 1px solid var(--oro); font-size: 15px; line-height: 1.35; transform: translate(-50%, calc(-100% - 14px)); white-space: nowrap; }
 .tip b { font-family: var(--serif); }
 .sin-3d .hero { background: repeating-linear-gradient(90deg, rgba(184, 137, 59, .12) 0 2px, transparent 2px 40px), radial-gradient(ellipse at 50% 40%, #3b2416 0%, #1b120d 72%); }
@@ -242,11 +242,11 @@ body.con-modal { overflow: hidden; }
   .nav a:not(.btn) { display: none; }
   .marca small { display: none; }
 }
-@media (max-width: 760px), (orientation: portrait) and (max-width: 1100px) {
+@media (max-width: 760px), (orientation: portrait) and (max-width: 1100px), (orientation: landscape) and (max-height: 500px) {
   .hero { display: flex; flex-direction: column; min-height: 0; }
   .escena { position: relative; height: 64vh; min-height: 400px; }
   .hero-texto { position: relative; left: auto; bottom: auto; align-self: center; width: calc(100% - 24px); max-width: 640px; margin: -24px 0 18px; }
-  .pista { top: 12px; bottom: auto; right: 50%; transform: translateX(50%); white-space: nowrap; font-size: 13px; }
+  .pista { top: 12px; bottom: auto; left: 50%; right: auto; transform: translateX(-50%); white-space: nowrap; font-size: 13px; }
 }
 @media (max-width: 560px) {
   .lista { gap: 14px; }

@@ -61,6 +61,7 @@ Luego entra a `http://localhost:8000`.
 ## Detalles que ya resuelve
 
 - En celular la escena se reacomoda en vertical y las tarjetas del catálogo se vuelven compactas.
+- La cámara se encuadra sola en cualquier tamaño de pantalla: el árbol con su estrella y los tres gatos siempre caben completos, sin quedar debajo del recuadro de texto, y gira alrededor del árbol de modo que Lana se vea junto a la chimenea.
 - Si el teléfono no tiene 3D, la página se ve completa sin la escena. Si la persona pidió reducir animaciones en su sistema, la sala se queda quieta.
 - La animación se pausa cuando la escena no está en pantalla, para no gastar batería.
 - El carrito se guarda en el navegador de quien visita, así que no se pierde si recarga la página.

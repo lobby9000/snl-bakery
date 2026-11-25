@@ -64,6 +64,8 @@ function iniciar() {
   escena.fog = new THREE.Fog('#1c130e', 16, 30);
   const camara = new THREE.PerspectiveCamera(34, 1, 0.1, 80);
   const objetivo = new THREE.Vector3(0, 1.9, 0);
+  // Profundidad de la pared del fondo: el árbol queda a 6 unidades (antes 7.2)
+  const PARED = -6.0;
 
   escena.add(new THREE.HemisphereLight('#ffd9ad', '#2a160b', 1.25));
   const clave = new THREE.DirectionalLight('#ffe2c2', 1.7); clave.position.set(5, 9, 8); escena.add(clave);
@@ -101,13 +103,13 @@ function iniciar() {
       g.beginPath(); g.moveTo(cx, y - 5); g.lineTo(cx + 3, y); g.lineTo(cx, y + 5); g.lineTo(cx - 3, y); g.closePath(); g.fill();
     }
   }, 12, 4);
-  const pared = malla(new THREE.PlaneGeometry(44, 13), new THREE.MeshStandardMaterial({ map: papelTapiz, roughness: 0.95 }), 0, 6.5, -7.2);
+  const pared = malla(new THREE.PlaneGeometry(44, 13), new THREE.MeshStandardMaterial({ map: papelTapiz, roughness: 0.95 }), 0, 6.5, PARED);
   escena.add(pared);
-  escena.add(malla(new THREE.BoxGeometry(44, 1.3, 0.14), mat('#e6d8bb'), 0, 0.65, -7.12));
-  escena.add(malla(new THREE.BoxGeometry(44, 0.1, 0.24), mat('#4a2c1a'), 0, 1.32, -7.08));
+  escena.add(malla(new THREE.BoxGeometry(44, 1.3, 0.14), mat('#e6d8bb'), 0, 0.65, PARED + 0.08));
+  escena.add(malla(new THREE.BoxGeometry(44, 0.1, 0.24), mat('#4a2c1a'), 0, 1.32, PARED + 0.12));
 
   const rincon = new THREE.Group(); escena.add(rincon);
-  const chim = new THREE.Group(); chim.position.set(0, 0, -6.6); rincon.add(chim);
+  const chim = new THREE.Group(); chim.position.set(0, 0, PARED + 0.6); rincon.add(chim);
   const marmol = mat('#e9e1d2', { roughness: 0.6 });
   chim.add(malla(new THREE.BoxGeometry(0.6, 2.25, 0.72), marmol, -1.3, 1.12, 0));
   chim.add(malla(new THREE.BoxGeometry(0.6, 2.25, 0.72), marmol, 1.3, 1.12, 0));
@@ -151,7 +153,7 @@ function iniciar() {
     l.userData.base = hgt; llamas.push(l); chim.add(l);
   });
   const haloFuego = halo('#ff8a2a', 2.6, 0.5); haloFuego.position.set(0, 0.7, 0.3); chim.add(haloFuego);
-  const fuego = new THREE.PointLight('#ff7a26', 22, 10, 1.6); fuego.position.set(0, 0.9, -5.7); rincon.add(fuego);
+  const fuego = new THREE.PointLight('#ff7a26', 22, 10, 1.6); fuego.position.set(0, 0.9, PARED + 1.5); rincon.add(fuego);
   [['#b3261e', -1.0], ['#1f5a37', 0], ['#efe2c6', 1.0]].forEach(([c, x], i) => {
     const media = new THREE.Group(); media.position.set(x, 2.25, 0.5); media.rotation.z = (i - 1) * 0.06;
     media.add(malla(new THREE.BoxGeometry(0.22, 0.4, 0.07), mat(c), 0, -0.25, 0));
@@ -167,7 +169,7 @@ function iniciar() {
     const h = halo('#ffcf7a', 0.5, 0.8); h.position.set(x, 3.26, 0.15); chim.add(h);
   });
 
-  const ventana = new THREE.Group(); ventana.position.set(-4.3, 0, -7.1); escena.add(ventana);
+  const ventana = new THREE.Group(); ventana.position.set(-4.3, 0, PARED + 0.1); escena.add(ventana);
   const noche = textura(128, 256, (g, w, h) => {
     const gr = g.createLinearGradient(0, 0, 0, h);
     gr.addColorStop(0, '#0c1630'); gr.addColorStop(0.7, '#1c2c55'); gr.addColorStop(1, '#3a4a7a');
@@ -464,7 +466,7 @@ function iniciar() {
     else cabeza.position.set(0.38, 0.33, 0);
     gato.add(cabeza);
     const colaPts = pose === 'jugando'
-      ? [[-0.12, 0.06, 0], [-0.36, 0.04, 0.1], [-0.5, 0.08, 0.28], [-0.48, 0.2, 0.4]]
+      ? [[-0.2, 0.1, 0], [-0.38, 0.18, 0.04], [-0.44, 0.42, 0.06], [-0.38, 0.64, 0.06], [-0.26, 0.7, 0.04]] // cola en signo de interrogación, de juego
       : enrosc
         ? [[-0.33, 0.07, -0.08], [-0.3, 0.05, 0.2], [-0.04, 0.05, 0.37], [0.24, 0.06, 0.38]]
         : [[-0.4, 0.09, 0], [-0.46, 0.06, 0.2], [-0.26, 0.05, 0.34], [0.04, 0.05, 0.36]];
@@ -472,10 +474,10 @@ function iniciar() {
     gato.add(cola);
     let pataJuego = null;
     if (pose === 'jugando') {
-      gato.add(malla(new THREE.IcosahedronGeometry(0.05, 0), blanco, 0.16, 0.05, 0.08));
-      pataJuego = new THREE.Group(); pataJuego.position.set(0.12, 0.42, -0.08);
-      pataJuego.add(malla(new THREE.CylinderGeometry(0.035, 0.04, 0.3, 5), piel, 0, -0.15, 0));
-      pataJuego.add(malla(new THREE.IcosahedronGeometry(0.05, 0), blanco, 0, -0.3, 0));
+      gato.add(malla(new THREE.IcosahedronGeometry(0.05, 0), blanco, 0.16, 0.05, -0.08));
+      pataJuego = new THREE.Group(); pataJuego.position.set(0.12, 0.42, 0.09);
+      pataJuego.add(malla(new THREE.CylinderGeometry(0.042, 0.047, 0.3, 5), piel, 0, -0.15, 0));
+      pataJuego.add(malla(new THREE.IcosahedronGeometry(0.056, 0), blanco, 0, -0.3, 0));
       gato.add(pataJuego);
     } else if (pose === 'echada') {
       [-1, 1].forEach((s) => gato.add(malla(new THREE.IcosahedronGeometry(0.05, 0), blanco, 0.42, 0.05, s * 0.09)));
@@ -490,7 +492,7 @@ function iniciar() {
     return { gato, cuerpo, cabeza, cola, pataJuego, tapa, esc };
   }
   const mirar = (obj, x, z) => { obj.rotation.y = Math.atan2(-(z - obj.position.z), x - obj.position.x); };
-  const lugares = { echada: [1.55, 2.95], jugando: [-1.2, 3.05], camaron: [-1.45, -4.75], dormida: [-1.45, -4.75] };
+  const lugares = { echada: [1.4, 3.0], jugando: [-1.2, 3.05], camaron: [-1.05, PARED + 2.45], dormida: [-1.05, PARED + 2.45] };
   const poses = ['echada', 'jugando', 'camaron'];
   const porDefecto = [
     { nombre: 'Sundae', pose: 'echada', escala: 1.2, patron: 'bicolor', pelaje: '#d9822b', panza: '#fbf4ea', rayas: '#b5611c', ojos: '#b9c46a' },
@@ -503,7 +505,7 @@ function iniciar() {
     const [x, z] = lugares[pose];
     g.gato.position.set(x, 0, z);
     if (pose === 'echada') mirar(g.gato, 0, 0.4);
-    if (pose === 'jugando') mirar(g.gato, 0.4, 6.5);
+    if (pose === 'jugando') mirar(g.gato, x + 1, z + 0.55);
     const enrosc = pose === 'camaron' || pose === 'dormida';
     if (enrosc) {
       // cobija de terciopelo verde y cojín rojo con copo de fieltro, como en su foto
@@ -521,41 +523,120 @@ function iniciar() {
     }
     (enrosc ? rincon : escena).add(g.gato);
     if (pose === 'jugando') {
+      // esfera caída, igual a las del árbol: bola, banda y casquillo, acostada frente a la pata de Nimue
       const p = productos[2] || productos[0] || { color: '#2f6fd6' };
-      const caida = malla(new THREE.IcosahedronGeometry(0.13, 1), new THREE.MeshStandardMaterial({ color: p.color || '#2f6fd6', flatShading: true, metalness: 0.4, roughness: 0.25 }), 0.5, 0.13, -0.12);
-      caida.scale.setScalar(1 / (+cfg.escala || 1));
-      caida.position.set(0.5 / (+cfg.escala || 1) * 0.85, 0.13 / (+cfg.escala || 1), -0.12);
-      g.gato.add(caida); g.caida = caida;
+      const k = 1 / (+cfg.escala || 1), ro = 0.15;
+      const c = new THREE.Color(p.color || '#2f6fd6');
+      const caida = new THREE.Group(), ladeada = new THREE.Group();
+      const bola = malla(icoGeo, new THREE.MeshStandardMaterial({ color: c, flatShading: true, metalness: 0.4, roughness: 0.25, emissive: c, emissiveIntensity: 0.12 }));
+      bola.scale.setScalar(ro); ladeada.add(bola);
+      const lum = c.r * 0.3 + c.g * 0.59 + c.b * 0.11;
+      const banda = malla(new THREE.TorusGeometry(ro, ro * 0.11, 4, 14), mat(lum > 0.6 ? '#b3261e' : '#ecd9a6', { metalness: 0.4, roughness: 0.4 }));
+      banda.rotation.x = Math.PI / 2; ladeada.add(banda);
+      ladeada.add(malla(new THREE.CylinderGeometry(ro * 0.28, ro * 0.28, ro * 0.32, 6), mat('#c9a14a', { metalness: 0.7, roughness: 0.3 }), 0, ro * 1.05, 0));
+      ladeada.rotation.set(1.05, 0.4, 0);
+      caida.add(ladeada);
+      caida.scale.setScalar(k);
+      caida.position.set(0.61, ro * k, 0.06);
+      g.gato.add(caida);
+      g.caida = caida; g.caidaX = 0.61; g.caidaR = ro * k; g.caidaD = 0.3;
     }
     gatos.push({ ...g, pose: enrosc ? 'dormida' : pose, fase: i * 1.7 });
   });
 
   // ---------- cámara: encuadre, arrastre y balanceo
-  let az = 0, azObj = 0, alt = 0.2, ancho = 1, alto = 1, dist = 11, azBase = 0, empuje = 0;
-  function encuadrar() {
+  let az = 0, azObj = 0, alt = 0.2, ancho = 1, alto = 1, dist = 11, azBase = 0, empuje = 0, vaiven = 0.2;
+  const tarjeta = hero ? hero.querySelector('.hero-texto') : null;
+  const pista = hero ? hero.querySelector('.pista') : null;
+  // Lo que siempre debe verse completo: el árbol con su estrella y los tres gatos, con la esfera de Nimue
+  const claves = [];
+  {
+    escena.updateMatrixWorld(true);
+    const juntar = (raiz, enRincon) => raiz.traverse((o) => {
+      if (!o.isMesh || !o.material || o.material.visible === false || o.geometry === focoGeo || o.geometry === zocaloGeo) return;
+      if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
+      const b = o.geometry.boundingBox;
+      for (const x of [b.min.x, b.max.x]) for (const y of [b.min.y, b.max.y]) for (const z of [b.min.z, b.max.z]) claves.push({ p: new THREE.Vector3(x, y, z).applyMatrix4(o.matrixWorld), enRincon });
+    });
+    juntar(arbol, false);
+    gatos.forEach((g) => {
+      juntar(g.gato, g.gato.parent === rincon);
+      if (g.caida) { // también hasta donde llega rodando la esfera
+        g.caida.position.x = g.caidaX + g.caidaD; g.caida.updateMatrixWorld(true);
+        juntar(g.caida, false);
+        g.caida.position.x = g.caidaX; g.caida.updateMatrixWorld(true);
+      }
+    });
+  }
+  const vT = new THREE.Vector3();
+  function zonaLibre() {
+    // Parte del lienzo que no tapan la tarjeta del hero ni la pista, de -1 a 1
+    const r = cont.getBoundingClientRect();
+    const m = Math.max(10, Math.min(r.width, r.height) * 0.03);
+    let x0 = r.left + m, x1 = r.right - m, y0 = r.top + m, y1 = r.bottom - m;
+    if (tarjeta && tarjeta.offsetWidth) {
+      const t = tarjeta.getBoundingClientRect();
+      if (t.top > r.top + r.height * 0.55 && t.width > r.width * 0.6) y1 = Math.min(y1, t.top - m * 0.6); // tarjeta debajo de la escena
+      else if (t.left < r.left + r.width * 0.5) x0 = Math.max(x0, t.right + m); // tarjeta encima, a la izquierda
+    }
+    if (pista && pista.offsetWidth) {
+      const p = pista.getBoundingClientRect();
+      if (p.right > x0 + 20 && p.left < x1 - 20) y0 = Math.max(y0, p.bottom + 6);
+    }
+    return { x0: ((x0 - r.left) / r.width) * 2 - 1, x1: ((x1 - r.left) / r.width) * 2 - 1, y0: 1 - ((y1 - r.top) / r.height) * 2, y1: 1 - ((y0 - r.top) / r.height) * 2 };
+  }
+  function colocar(a) {
+    camara.position.set(objetivo.x + Math.sin(a) * dist, objetivo.y + 1.15 + alt, objetivo.z + Math.cos(a) * dist);
+    camara.lookAt(objetivo);
+    camara.updateMatrixWorld();
+  }
+  function ajustar(zona) {
+    // Distancia y altura para que todo lo importante quepa en la zona libre, aun en los extremos del vaivén.
+    // La cámara siempre gira alrededor del árbol; para dejar libre el lado de la tarjeta se recorre la imagen
+    // (como un lente descentrado) en vez de mover la cámara, así el árbol no tapa a Lana.
+    const tanV = Math.tan(THREE.MathUtils.degToRad(camara.fov / 2));
+    // en los extremos del vaivén basta con que casi todo quepa: el margen de la zona absorbe el resto
+    const angulos = [azBase - vaiven * 0.6, azBase, azBase + vaiven * 0.6];
+    objetivo.set(0, 1.9, 0); dist = 11;
+    camara.filmOffset = 0; camara.updateProjectionMatrix();
+    let corrimiento = 0;
+    for (let it = 0; it < 16; it++) {
+      let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+      for (const a of angulos) {
+        colocar(a);
+        for (const k of claves) {
+          vT.copy(k.p); if (k.enRincon) vT.x += rincon.position.x;
+          vT.project(camara);
+          if (vT.x < x0) x0 = vT.x; if (vT.x > x1) x1 = vT.x; if (vT.y < y0) y0 = vT.y; if (vT.y > y1) y1 = vT.y;
+        }
+      }
+      const escala = Math.max((x1 - x0) / (zona.x1 - zona.x0), (y1 - y0) / (zona.y1 - zona.y0));
+      corrimiento = (zona.x0 + zona.x1) / 2 - (x0 + x1) / 2;
+      objetivo.y += ((y0 + y1) / 2 - (zona.y0 + zona.y1) / 2) * tanV * dist * 0.8;
+      dist = THREE.MathUtils.clamp(dist * (1 + (escala - 1) * 0.8), 6, 40);
+    }
+    camara.filmOffset = -corrimiento * camara.getFilmWidth() * tanV * camara.aspect;
+    camara.updateProjectionMatrix();
+  }
+  function encuadrar(o = {}) {
     ancho = cont.clientWidth || 1; alto = cont.clientHeight || 1;
     renderer.setSize(ancho, alto, false);
     const asp = ancho / alto;
     camara.aspect = asp;
-    const vertical = asp < 1;
-    camara.fov = vertical ? 40 : 34;
+    camara.fov = asp < 1 ? 40 : 34;
     camara.updateProjectionMatrix();
-    const tan = Math.tan(THREE.MathUtils.degToRad(camara.fov / 2));
-    const necesitaAlto = vertical ? 6.4 : 5.2, necesitaAncho = vertical ? 4.9 : 9.2;
-    dist = Math.max(necesitaAlto / 2 / tan, necesitaAncho / 2 / (tan * asp)) + 1.2;
-    const desplazar = asp > 1.25 && window.innerWidth > 760;
-    objetivo.set(desplazar ? -0.95 : 0, vertical ? 1.8 : 1.95, 0);
-    rincon.position.x = desplazar ? 5.0 : vertical ? 3.0 : 4.4;
-    ventana.position.x = desplazar ? -4.6 : vertical ? -3.2 : -4.3;
-    azBase = desplazar ? -0.12 : 0;
+    const zona = zonaLibre();
+    const angosta = asp * (zona.x1 - zona.x0) / (zona.y1 - zona.y0) < 1.05;
+    // la chimenea a la derecha del árbol; Lana duerme frente al fuego, donde el árbol no la tapa
+    rincon.position.x = o.rincon != null ? o.rincon : angosta ? 3.3 : 4.6;
+    ventana.position.x = angosta ? -3.2 : -4.6;
+    azBase = o.azBase != null ? o.azBase : angosta ? 0.08 : 0.05;
+    vaiven = o.vaiven != null ? o.vaiven : angosta ? 0.09 : 0.14;
+    ajustar(zona);
     colocarCamara();
   }
-  function colocarCamara() {
-    const a = azBase + az;
-    camara.position.set(objetivo.x + Math.sin(a) * dist, objetivo.y + 1.15 + alt, Math.cos(a) * dist);
-    camara.lookAt(objetivo);
-  }
-  new ResizeObserver(encuadrar).observe(cont);
+  function colocarCamara() { colocar(azBase + az); }
+  new ResizeObserver(() => encuadrar()).observe(cont);
   encuadrar();
 
   const lienzo = renderer.domElement;
@@ -678,18 +759,26 @@ function iniciar() {
         g.cola.rotation.y = Math.sin(t * 1.6) * 0.06;
       }
       if (g.pose === 'jugando' && g.pataJuego) {
-        const ciclo = (t + g.fase) % 2.6;
-        const golpe = ciclo < 0.5 ? Math.sin((ciclo / 0.5) * Math.PI) : 0;
-        g.pataJuego.rotation.z = -0.15 - golpe * 1.05;
-        g.pataJuego.rotation.x = golpe * 0.25;
-        if (g.caida) { g.caida.rotation.x += golpe * dt * 6; g.caida.position.z = -0.12 + Math.sin((t + g.fase) * 0.9) * 0.05; }
+        // manotazo: la pata sale hacia la esfera, la esfera rueda lejos y regresa justo para el siguiente
+        const ciclo = (t + g.fase) % 2.5;
+        const golpe = ciclo < 0.42 ? Math.sin((ciclo / 0.42) * Math.PI) : 0;
+        const u = THREE.MathUtils.clamp((ciclo - 0.17) / 2.25, 0, 1);
+        const lejos = 6.75 * u * (1 - u) * (1 - u);  // sale rápido tras el golpe y regresa despacito
+        g.pataJuego.rotation.z = 0.1 + golpe * 1.12;
+        g.pataJuego.rotation.x = -golpe * 0.18;
+        if (g.caida) {
+          const d = g.caidaD * lejos;
+          g.caida.position.x = g.caidaX + d;
+          g.caida.rotation.z = -d / g.caidaR;
+        }
+        g.cuerpo.rotation.z = -golpe * 0.07;
+        g.cabeza.rotation.z = -0.3 + lejos * 0.1 + golpe * 0.05;
         g.cola.rotation.x = Math.sin(t * 3 + g.fase) * 0.12;
-        g.cabeza.rotation.z = -0.15 + golpe * 0.1;
       }
     });
     if (!arrastre) {
       empuje = Math.max(0, empuje - dt);
-      if (empuje <= 0) azObj = THREE.MathUtils.lerp(azObj, Math.sin(t * 0.11) * 0.2, 0.01);
+      if (empuje <= 0) azObj = THREE.MathUtils.lerp(azObj, Math.sin(t * 0.11) * vaiven, 0.01);
     }
     az = THREE.MathUtils.lerp(az, azObj, 0.08);
     colocarCamara();
@@ -718,5 +807,5 @@ function iniciar() {
     });
     requestAnimationFrame(ciclo);
   }
-  window.SNL_ESCENA = { escena, camara, renderer, dibujar, actualizar };
+  window.SNL_ESCENA = { escena, camara, renderer, dibujar, actualizar, encuadrar, fijarAz: (a) => { az = azObj = a; colocarCamara(); } };
 }
